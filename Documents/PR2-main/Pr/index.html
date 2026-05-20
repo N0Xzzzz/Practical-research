@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STI College Carmona Cybersecurity Hub</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="hub-header">
+    <div class="logo-section">
+      <img src="img/e713da70f0964f86be09d239049973fc.png" alt="STI College Carmona Logo" class="sti-logo" />
+      <h1><i class=""></i> STI College Carmona Cybersecurity Hub</h1>
+    </div>
+
+    <!-- Profile (hidden until login) -->
+    <div id="user-profile" class="user-profile hidden">
+      <span class="user-name">admin</span>
+      <div class="avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <i class="dropdown-icon fas fa-chevron-down"></i>
+      <div id="profile-dropdown" class="profile-dropdown hidden">
+        <div class="profile-info">
+          <div><strong>Username:</strong> <span id="profile-username"></span></div>
+          <div><strong>User ID:</strong> <span id="profile-userid"></span></div>
+        </div>
+        <button id="view-details-btn" type="button" class="logout-btn">View details</button>
+        <button id="logout-btn" type="button" class="logout-btn logout-secondary">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Form -->
+  <div id="login-form" class="card auth-form">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login-btn" type="button">Login</button>
+    <p id="status-message" class="status-message"></p>
+    <p id="error-message"></p>
+    <p id="debug-message" class="debug-message"></p>
+    <p>Don’t have an account? <span id="show-signup">Sign up</span></p>
+  </div>
+
+  <!-- Sign-Up Form -->
+  <div id="signup-form" class="card auth-form hidden">
+    <h2>Sign Up</h2>
+    <input type="text" id="signup-fullname" placeholder="Full Name" />
+    <input type="email" id="signup-email" placeholder="Email Address" />
+    <input type="number" id="signup-age" placeholder="Age" min="1" />
+    <input type="text" id="signup-year" placeholder="Year / Section" />
+    <input type="text" id="signup-username" placeholder="Choose a Username" />
+    <input type="password" id="signup-password" placeholder="Choose a Password" />
+    <button id="signup-btn" type="button">Sign Up</button>
+    <p>Already have an account? <span id="show-login">Login</span></p>
+  </div>
+
+  <!-- Main App (hidden until login) -->
+  <div id="main-app" class="hidden">
+    <div id="main-content">
+      <div class="search-container card">
+        <input type="text" id="search-input" placeholder="Search for security topics (e.g., 2FA, phishing)" />
+        <button id="search-btn">Search</button>
+      </div>
+
+      <div class="suggestions card">
+        <p>Try searching for:</p>
+        <ul>
+          <li>Two-Factor Authentication</li>
+          <li>Social Media Security</li>
+          <li>Phishing Awareness</li>
+          <li>ELMS Account Recovery</li>
+        </ul>
+      </div>
+
+      <!-- Tip of the Day -->
+      <div id="tip-box" class="extra-info card"></div>
+
+      <!-- Error + Results -->
+      <div id="error-container" class="hidden"></div>
+      <div id="result-heading"></div>
+      <div id="topics" class="topics-container"></div>
+
+      <!-- Topic Details -->
+      <div id="topic-details" class="hidden">
+        <button id="back-btn" class="back-btn"><i class="fas fa-arrow-left"></i> Back to topics</button>
+        <div class="topic-details-content"></div>
+      </div>
+    </div>
+
+    <!-- User Details Page -->
+    <div id="user-details-page" class="hidden user-details-page card">
+      <div class="user-details-header">
+        <button id="user-details-back-btn" class="back-btn"><i class="fas fa-arrow-left"></i> Back to hub</button>
+        <div>
+          <h2>User Details</h2>
+          <p class="subtext">Quick stats and activity for your account.</p>
+        </div>
+      </div>
+
+      <div class="detail-grid" id="details-stats">
+        <div class="detail-card">
+          <h3>Username</h3>
+          <p id="detail-username">-</p>
+        </div>
+        <div class="detail-card">
+          <h3>Full Name</h3>
+          <p id="detail-fullname">-</p>
+        </div>
+        <div class="detail-card">
+          <h3>Email</h3>
+          <p id="detail-email">-</p>
+        </div>
+        <div class="detail-card">
+          <h3>Age</h3>
+          <p id="detail-age">-</p>
+        </div>
+        <div class="detail-card">
+          <h3>Year / Section</h3>
+          <p id="detail-year">-</p>
+        </div>
+        <div class="detail-card">
+          <h3>User ID</h3>
+          <p id="detail-userid">-</p>
+        </div>
+        <div class="detail-card">
+          <h3>Total Logins</h3>
+          <p id="detail-logins">0</p>
+        </div>
+        <div class="detail-card">
+          <h3>Last Login</h3>
+          <p id="detail-last-login">-</p>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-card">
+          <h3>Login Activity</h3>
+          <div class="bar-chart" id="login-activity-chart"></div>
+          <p class="chart-caption">Activity over the last 7 days.</p>
+        </div>
+        <div class="chart-card">
+          <h3>Account Health</h3>
+          <div class="progress-pill">
+            <span id="detail-account-health">85%</span>
+          </div>
+          <p class="chart-caption">Keep your account strong with regular logins.</p>
+        </div>
+      </div>
+
+      <div class="session-history card">
+        <h3>Recent Sessions</h3>
+        <ul id="details-sessions" class="session-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script src="script.js?v=2"></script>
+  <button id="scroll-top-btn" class="scroll-top-btn hidden">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+</body>
+</html>
