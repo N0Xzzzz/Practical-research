@@ -86,8 +86,21 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("📡 Response status:", response.status);
       
       if (response.ok) {
-        topicsData = await response.json();
-        console.log("✅ Topics loaded from database:", topicsData.length, "topics");
+        const backendTopics = await response.json();
+        if (Array.isArray(backendTopics) && backendTopics.length > 0) {
+          const existingIds = new Set(topicsData.map(topic => String(topic.id)));
+          topicsData = [...topicsData];
+          backendTopics.forEach(topic => {
+            if (!existingIds.has(String(topic.id))) {
+              topicsData.push(topic);
+              existingIds.add(String(topic.id));
+            }
+          });
+          console.log("✅ Topics loaded and merged:", topicsData.length, "topics");
+        } else {
+          console.warn("⚠️ Backend returned no topics, keeping fallback topics");
+          loadDefaultTopics();
+        }
       } else {
         console.error("❌ Failed to fetch topics, using fallback");
         loadDefaultTopics();
@@ -101,12 +114,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadDefaultTopics() {
     topicsData = [
-      { id:"1", title:"Two-Factor Authentication", category:"Account Security", description:"Adds an extra layer of security by requiring a second verification step.", link:"https://support.google.com/accounts/answer/185839" },
-      { id:"2", title:"Account Recovery", category:"Account Security", description:"Helps you regain access to your accounts if you forget your password.", link:"https://support.google.com/accounts/answer/7682439" },
-      { id:"3", title:"Social Media Security", category:"Privacy", description:"Protect your social media accounts by using strong passwords.", link:"https://www.ncsc.gov.uk/guidance/social-media-how-to-use-it-safely" },
-      { id:"4", title:"Phishing Awareness", category:"Email Security", description:"Phishing attacks trick users into revealing sensitive information.", link:"https://www.ncsc.gov.uk/guidance/phishing#section_2", aliases:["phishing","pishing"] },
-      { id:"5", title:"ELMS Account Recovery", category:"School Accounts", description:"Recover your ELMS account by visiting the Registrar's Office.", link:"" },
-      { id:"6", title:"Use Strong Passwords", category:"Account Security", description:"Strong passwords protect your accounts from unauthorized access.", link:"https://www.cisa.gov/secure-our-world/use-strong-passwords" }
+      { id:"1", title:"Two-Factor Authentication", category:"Account Security", description:"Learn why using two-step verification helps keep student accounts safe from unauthorized access.", link:"https://support.google.com/accounts/answer/185839" },
+      { id:"2", title:"Account Recovery", category:"Account Security", description:"Discover how to set up recovery options so you can access school accounts if you forget your password.", link:"https://support.google.com/accounts/answer/7682439" },
+      { id:"3", title:"Social Media Security", category:"Privacy", description:"Find out how to protect your privacy on social media, especially when sharing student life and school details.", link:"https://www.ncsc.gov.uk/guidance/social-media-how-to-use-it-safely" },
+      { id:"4", title:"Phishing Awareness", category:"Email Security", description:"Understand how to spot fake school emails and phishing messages that try to trick students.", link:"https://www.ncsc.gov.uk/guidance/phishing#section_2", aliases:["phishing","pishing"] },
+      { id:"5", title:"ELMS Account Recovery", category:"School Accounts", description:"Learn the steps to recover your ELMS or school portal account safely when access is lost.", link:"https://www.identitytheft.gov/" },
+      { id:"6", title:"Use Strong Passwords", category:"Account Security", description:"Find out how students can create strong, memorable passwords for school and personal accounts.", link:"https://www.cisa.gov/secure-our-world/use-strong-passwords" },
+      { id:"7", title:"Cybersecurity Awareness", category:"Cyber Security Awareness", description:"Get student-friendly tips on staying safe online, keeping devices secure, and avoiding common cyber risks.", link:"https://www.nist.gov/cyberframework" },
+      { id:"8", title:"Safe Browsing Practices", category:"Cyber Security Awareness", description:"Learn how to browse safely, avoid dangerous websites, and protect schoolwork from online threats.", link:"https://staysafeonline.org/resources/" },
+      { id:"9", title:"Mobile Device Security", category:"Cyber Security Awareness", description:"See how students can secure phones and tablets used for learning and communication.", link:"https://consumer.ftc.gov/identity-theft-online-security" },
+      { id:"10", title:"Recognizing Scams", category:"Cyber Security Awareness", description:"Learn how to identify scam messages, fake offers, and dangerous links aimed at students.", link:"https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams" },
+      { id:"11", title:"Digital Footprint", category:"Online Safety", description:"Understand how your online activity becomes part of your digital footprint and how to keep it positive.", link:"https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" },
+      { id:"12", title:"Protecting Student Privacy", category:"Privacy", description:"Find out what personal information students should keep private and how to share responsibly online.", link:"https://consumer.ftc.gov/identity-theft-and-online-security/online-privacy-and-security" },
+      { id:"13", title:"Cyberbullying Awareness", category:"Digital Citizenship", description:"Learn how to recognize cyberbullying and what students can do to stay safe and support others.", link:"https://www.stopbullying.gov/cyberbullying/what-is-it" },
+      { id:"14", title:"Campus Wi-Fi Safety", category:"Network Security", description:"Discover best practices for using campus and public Wi-Fi safely while studying and browsing.", link:"https://consumer.ftc.gov/identity-theft-online-security" },
+      { id:"15", title:"Cybersecurity Awareness Training", category:"Cyber Security Awareness", description:"Explore training resources and practical tips students can use to build safer online habits and recognize common threats.", link:"https://www.nist.gov/cyberframework" },
+      { id:"16", title:"Password Manager Safety", category:"Account Security", description:"Learn how password managers help students store strong passwords safely and avoid reusing the same password across multiple sites.", link:"https://support.google.com/accounts/answer/32040" },
+      { id:"17", title:"Privacy & Data Sharing", category:"Privacy", description:"Discover how to manage personal privacy settings and think before sharing sensitive information online or in school groups.", link:"https://www.nist.gov/cybersecurity-and-privacy" },
+      { id:"18", title:"Online Study Tool Safety", category:"Digital Citizenship", description:"Find tips for staying safe when using online learning tools, classroom apps, and school collaboration platforms.", link:"https://consumer.ftc.gov/consumer-alerts" },
+      { id:"19", title:"Protecting Personal Devices", category:"Device Security", description:"See how to keep laptops, tablets, and smartphones secure with updates, screen locks, and safe downloads.", link:"https://consumer.ftc.gov/identity-theft-online-security" },
+      { id:"20", title:"Responsible Password Sharing", category:"Account Security", description:"Understand why sharing passwords is risky and how to keep your school accounts secure.", link:"https://support.google.com/accounts/answer/32040" }
     ];
   }
 
@@ -597,6 +624,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  // Load topics on page load
+  // Load default topics immediately, then refresh from the backend
+  loadDefaultTopics();
   fetchTopics();
 });
